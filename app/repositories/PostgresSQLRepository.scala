@@ -54,7 +54,8 @@ class PostgresSQLRepository(jdbcUrl: String, username: String, password: String)
     */
   override def read(developerId: UUID): Future[Developer] =
     retrieve(developerId).map {
-      case Some(value) => value
+      case Some(value) =>
+        value
       case None =>
         throw new Exception(
           s"Failed to retrieve the developer with id: ${developerId.toString}")
@@ -213,23 +214,23 @@ trait Queries extends Schema {
 
   import jdbcProfile.api._
 
-  def insert(developer: Developer): Future[Option[UUID]] = {
+  protected def insert(developer: Developer): Future[Option[UUID]] = {
     val entity = developer.copy(id = Some(UUID.randomUUID()))
     val insertQuery = (developers returning developers.map(_.id)) += entity
     db.run(insertQuery)
   }
 
-  def retrieve(id: UUID): Future[Option[Developer]] = {
+  protected def retrieve(id: UUID): Future[Option[Developer]] = {
     val query = developers.filter(_.id === id).take(1).result
     db.run(query).map(_.headOption)
   }
 
-  def remove(id: UUID): Future[Int] = {
+  protected def remove(id: UUID): Future[Int] = {
     val query = developers.filter(_.id === id).delete
     db.run(query)
   }
 
-  def updateDb(developer: Developer): Future[Option[UUID]] = {
+  protected def updateDb(developer: Developer): Future[Option[UUID]] = {
     val deleteQuery = developers.filter(_.id === developer.id.get).delete
     val insertQuery = (developers returning developers.map(_.id)) += developer
     val transaction = (for {

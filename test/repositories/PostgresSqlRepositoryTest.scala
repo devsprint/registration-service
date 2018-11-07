@@ -1,6 +1,7 @@
 package repositories
 
 import java.sql.DriverManager
+import java.util.UUID
 
 import com.dimafeng.testcontainers.{ForAllTestContainer, PostgreSQLContainer}
 import domain.registration._
@@ -22,6 +23,22 @@ class PostgresSqlRepositoryTest
   private val logger = LoggerFactory.getLogger(getClass)
 
   override val container: PostgreSQLContainer = PostgreSQLContainer()
+
+  private val probe = Developer(
+    None,
+    "",
+    "Test",
+    1971,
+    Male,
+    Address("Str. Albac",
+            "51A",
+            "",
+            City("Cluj-Napoca"),
+            ZipCode("410086"),
+            Country("Romania")),
+    PhoneNumber("+40745596352"),
+    List("java", "scala", "docker", "oop")
+  )
 
   override def afterStart(): Unit = {
     logger.info("after start")
@@ -47,21 +64,6 @@ class PostgresSqlRepositoryTest
     val repository = PostgresSQLRepository(container.jdbcUrl,
                                            container.username,
                                            container.password)
-    val probe = Developer(
-      None,
-      "",
-      "Test",
-      1971,
-      Male,
-      Address("Str. Albac",
-              "51A",
-              "",
-              City("Cluj-Napoca"),
-              ZipCode("410086"),
-              Country("Romania")),
-      PhoneNumber("+40745596352"),
-      List("java", "scala", "docker", "oop")
-    )
 
     val uuidF = repository.create(probe)
 
@@ -76,30 +78,27 @@ class PostgresSqlRepositoryTest
     val repository = PostgresSQLRepository(container.jdbcUrl,
                                            container.username,
                                            container.password)
-    val probe = Developer(
-      None,
-      "",
-      "Test",
-      1971,
-      Male,
-      Address("Str. Albac",
-              "51A",
-              "",
-              City("Cluj-Napoca"),
-              ZipCode("410086"),
-              Country("Romania")),
-      PhoneNumber("+40745596352"),
-      List("java", "scala", "docker", "oop")
-    )
 
     val resultF = for {
       id <- repository.create(probe)
-      developer <- repository.retrieve(id)
+      developer <- repository.read(id)
     } yield developer
 
     whenReady(resultF) { result =>
       logger.info("Retrieved developer : {}", result)
-      result.map(_.copy(id = None)) shouldBe Some(probe)
+      result.copy(id = None) shouldBe probe
+    }
+  }
+
+  "Storage" should "fail when requested to retrieve a non-existing developer" in {
+    val repository = PostgresSQLRepository(container.jdbcUrl,
+                                           container.username,
+                                           container.password)
+
+    val resultF = repository.read(UUID.randomUUID())
+
+    whenReady(resultF.failed) { e =>
+      e shouldBe a[Exception]
     }
   }
 

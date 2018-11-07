@@ -16,3 +16,7 @@ Tag 0.0.4
 # 3 - Proper domain validation with some help from Cats
 
 Tag 0.0.5
+
+# 4 - Storage Support
+
+Tag 0.0.6 

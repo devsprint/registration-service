@@ -22,3 +22,5 @@ Tag 0.0.5
 Tag 0.0.6 
 
 ## 5 - Rest API layer 
+
+Tag 0.0.7

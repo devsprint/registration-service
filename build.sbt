@@ -9,6 +9,7 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 scalaVersion := "2.12.6"
 
 libraryDependencies += guice
+libraryDependencies += ehcache
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % Test
 libraryDependencies += "com.github.alexarchambault" %% "scalacheck-shapeless_1.14" % "1.2.0" % Test
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
@@ -25,6 +26,9 @@ libraryDependencies += "org.testcontainers" % "postgresql" % "1.7.3" % Test
 libraryDependencies ++= Seq(
   "org.postgresql" % "postgresql" % "42.0.0",
   "org.flywaydb" % "flyway-core" % "4.1.2")
+
+libraryDependencies += "org.webjars" % "swagger-ui" % "2.2.8"
+libraryDependencies += "com.iheart" %% "play-swagger" %"0.7.3"
 
 defaultLinuxInstallLocation in Docker := "/opt/microservice"
 dockerExposedPorts in Docker := Seq(9000)

@@ -13,6 +13,7 @@ libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % Test
 libraryDependencies += "com.github.alexarchambault" %% "scalacheck-shapeless_1.14" % "1.2.0" % Test
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
 libraryDependencies += "com.googlecode.libphonenumber" % "libphonenumber" % "4.3"
+libraryDependencies += "org.typelevel" %% "cats-core" % "1.4.0"
 
 
 defaultLinuxInstallLocation in Docker := "/opt/microservice"

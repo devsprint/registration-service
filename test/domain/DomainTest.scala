@@ -1,5 +1,6 @@
 package domain
 
+import cats.data.Validated.Valid
 import domain.registration.PhoneNumber
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.{FlatSpec, Matchers}
@@ -9,13 +10,13 @@ class DomainTest extends FlatSpec with Matchers with PropertyChecks {
 
   "Well known phone number" should "be valid" in {
     val APPLE_SUPPORT_IPHONE = PhoneNumber("+18006947466")
-    validation.validatePhone(APPLE_SUPPORT_IPHONE) shouldBe Some(
+    validation.validatePhone(APPLE_SUPPORT_IPHONE) shouldBe Valid(
       APPLE_SUPPORT_IPHONE)
   }
 
   "Romanian phone numbers using international format" should "generate valid Phone instances" in {
     forAll { phoneNumber: PhoneNumber =>
-      validation.validatePhone(phoneNumber) shouldBe Some(phoneNumber)
+      validation.validatePhone(phoneNumber) shouldBe Valid(phoneNumber)
     }
 
   }

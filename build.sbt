@@ -14,7 +14,17 @@ libraryDependencies += "com.github.alexarchambault" %% "scalacheck-shapeless_1.1
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
 libraryDependencies += "com.googlecode.libphonenumber" % "libphonenumber" % "4.3"
 libraryDependencies += "org.typelevel" %% "cats-core" % "1.4.0"
+libraryDependencies ++= Seq(
+  "com.typesafe.slick" %% "slick" % "3.2.3",
+  "org.slf4j" % "slf4j-nop" % "1.6.4",
+  "com.typesafe.slick" %% "slick-hikaricp" % "3.2.3"
+)
+libraryDependencies += "com.dimafeng" %% "testcontainers-scala" % "0.18.0" % Test
+libraryDependencies += "org.testcontainers" % "postgresql" % "1.7.3" % Test
 
+libraryDependencies ++= Seq(
+  "org.postgresql" % "postgresql" % "42.0.0",
+  "org.flywaydb" % "flyway-core" % "4.1.2")
 
 defaultLinuxInstallLocation in Docker := "/opt/microservice"
 dockerExposedPorts in Docker := Seq(9000)

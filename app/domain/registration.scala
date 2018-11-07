@@ -41,32 +41,32 @@ object registration {
     /**
       * Register a new developer
       *
-      * @param person - developer details
+      * @param developer - developer details
       * @return the unique id of the person registered with success, or an error in case that registration failed.
       */
-    def create(person: Developer): Future[UUID]
+    def create(developer: Developer): Future[UUID]
 
     /**
       * Retrieve a developer details.
       *
-      * @param personId - unique id of the person
+      * @param developerId - unique id of the person
       * @return the person details in case of success or an error
       */
-    def read(personId: UUID): Future[Developer]
+    def read(developerId: UUID): Future[Developer]
 
     /**
       * Update details of a developer
-      * @param person - the updated developer details
+      * @param developer - the updated developer details
       * @return success or an error
       */
-    def update(person: Developer): Future[Int]
+    def update(developer: Developer): Future[UUID]
 
     /**
       * Remove a registered developer.
-      * @param personId - the unique id of the developer
+      * @param developerId - the unique id of the developer
       * @return success or an error
       */
-    def delete(personId: UUID): Future[Int]
+    def delete(developerId: UUID): Future[Int]
 
     /**
       * Search for registered developers that match the search text.

@@ -3,7 +3,9 @@ package domain
 import java.time.LocalDate
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil
-import domain.registration.{Address, Developer, Phone}
+import domain.registration.{Address, Developer, PhoneNumber}
+
+import scala.util.Try
 
 object validation {
 
@@ -24,9 +26,6 @@ object validation {
   private val MAX_STREET_NUMBER_FIELD_LENGTH: Int = 256
   private val MIN_BIRTH_YEAR: Int = 1970
   private val DEVELOPER_MIN_AGE: Int = 18
-  private val PHONE_NUMBER_DEFAULT_REGION: String = "RO"
-
-
 
   def validateDeveloper(developer: Developer): Option[Developer] =
     for {
@@ -47,7 +46,10 @@ object validation {
     validateNonEmptyStringUpTo256Chars(lastName)
 
   private def validateBirthYear(birthYear: Int): Option[Int] =
-    if (birthYear >= MIN_BIRTH_YEAR && LocalDate.now().minusYears(DEVELOPER_MIN_AGE).getYear > birthYear)
+    if (birthYear >= MIN_BIRTH_YEAR && LocalDate
+          .now()
+          .minusYears(DEVELOPER_MIN_AGE)
+          .getYear > birthYear)
       Some(birthYear)
     else None
 
@@ -58,25 +60,32 @@ object validation {
       _ <- validateOther(address.other)
     } yield address
 
-  private def validatePhone(phone: Phone): Option[Phone] = {
+  def validatePhone(phone: PhoneNumber): Option[PhoneNumber] = {
     val service = PhoneNumberUtil.getInstance()
-    val phoneNumber = service.parseAndKeepRawInput(phone.number, PHONE_NUMBER_DEFAULT_REGION)
-    if (service.isValidNumber(phoneNumber)) Some(phone) else None
+    val phoneNumber =
+      Try {
+        service.parse(phone.number, "")
+      }
+    phoneNumber
+      .map { pn =>
+        if (service.isValidNumber(pn)) Some(phone) else None
+      }
+      .getOrElse(None)
+
   }
 
   private def validateSkills(skills: List[String]): Option[List[String]] =
     if (skills.distinct.length > 3) Some(skills) else None
 
-
   private def validateStreetName(streetName: String): Option[String] =
     validateNonEmptyStringUpTo256Chars(streetName)
 
   private def validateNumberField(number: String): Option[String] =
-    if (number.isEmpty || number.length > MAX_STREET_NUMBER_FIELD_LENGTH) None else Some(number)
+    if (number.isEmpty || number.length > MAX_STREET_NUMBER_FIELD_LENGTH) None
+    else Some(number)
 
   private def validateOther(other: String): Option[String] =
     if (other.length > MAX_FIELD_LENGTH) None else Some(other)
-
 
   private def validateNonEmptyStringUpTo256Chars(text: String): Option[String] =
     if (text.isEmpty || text.length > MAX_FIELD_LENGTH) None else Some(text)

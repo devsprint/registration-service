@@ -3,8 +3,97 @@
 # https://www.playframework.com/documentation/latest/ScalaRouting
 # ~~~~
 
-# An example controller showing a sample home page
+### NoDocs ###
+GET     /live                     controllers.HealthCheckController.livenessCheck
+### NoDocs ###
+GET     /ready                    controllers.HealthCheckController.readinessCheck
+
+###
+# tags:
+#    - Developers
+# summary: Register a new developer.
+# description: Register a new developer in the system.
+# parameters:
+#  - name: body
+#    schema:
+#      $ref: '#/definitions/domain.registration.Developer'
+# responses:
+#    201:
+#      description: Developer registred with success.
+#    400:
+#      description: Failed to register the developer.
+#
+###
+POST   /developers                 controllers.DeveloperController.addDeveloper
+
+###
+# tags:
+#    - Developers
+# summary: Retrieve an existing developer.
+# description: Retrieve developer details.
+# parameters:
+#    - name: developerId
+#      in: query
+#      description: The developer unique id.
+#      required: true
+#      type: string
+# responses:
+#    200:
+#      description: Developer found.
+#    404:
+#      description: Developer has not be foud.
+#
+###
+GET    /developers/:developerId    controllers.DeveloperController.retrieveDeveloper(developerId)
+
+###
+# tags:
+#    - Developers
+# summary: Update an existing developer
+# description: Update an existing developer.
+# parameters:
+#  - name: body
+#    schema:
+#      $ref: '#/definitions/domain.registration.Developer'
+# responses:
+#    201:
+#      description: Developer updated with success.
+#    400:
+#      description: Failed to update the developer.
+#
+###
+PUT    /developers                 controllers.DeveloperController.updateDeveloper
+
+
+###
+# tags:
+#    - Developers
+# summary: Remove an existing developer.
+# description: Remove developer from the system.
+# parameters:
+#    - name: developerId
+#      in: query
+#      description: The developer unique id.
+#      required: true
+#      type: string
+# responses:
+#    200:
+#      description: Developer removed.
+#    404:
+#      description: Developer has not be foud.
+#
+###
+DELETE /developers/:developerId    controllers.DeveloperController.removeDeveloper(developerId)
+
+
+### NoDocs ###
 GET     /                           controllers.HomeController.index
 
-# Map static resources from the /public folder to the /assets URL path
+### NoDocs ###
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+
+### NoDocs ###
+GET         /ci/docs/swagger-ui/*file       controllers.Assets.at(path:String="/public/lib/swagger-ui", file:String)
+
+### NoDocs ###
+GET         /ci/docs/swagger.json           controllers.ApiSpec.spec

@@ -9,3 +9,6 @@ Tag 0.0.2
 
 Tag 0.0.3
 
+# 2 - Domain validation with Option
+
+Tag 0.0.4

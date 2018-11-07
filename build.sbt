@@ -9,8 +9,10 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 scalaVersion := "2.12.6"
 
 libraryDependencies += guice
+libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % Test
+libraryDependencies += "com.github.alexarchambault" %% "scalacheck-shapeless_1.14" % "1.2.0" % Test
 libraryDependencies += "org.scalatestplus.play" %% "scalatestplus-play" % "3.1.2" % Test
-
+libraryDependencies += "com.googlecode.libphonenumber" % "libphonenumber" % "4.3"
 
 
 defaultLinuxInstallLocation in Docker := "/opt/microservice"

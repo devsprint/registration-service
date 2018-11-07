@@ -12,9 +12,20 @@ object registration {
 
   final case object Female
 
-  final case class Address(streetName: String, number: String, other: String)
+  final case class City(name: String) extends AnyVal
 
-  final case class Phone(number: String) extends AnyVal
+  final case class Country(name: String) extends AnyVal
+
+  final case class ZipCode(name: String) extends AnyVal
+
+  final case class Address(streetName: String,
+                           number: String,
+                           other: String,
+                           city: City,
+                           zipCode: ZipCode,
+                           country: Country)
+
+  final case class PhoneNumber(number: String) extends AnyVal
 
   final case class Developer(id: Option[UUID],
                              firstName: String,
@@ -22,7 +33,7 @@ object registration {
                              birthYear: Int,
                              gender: Gender,
                              address: Address,
-                             phone: Phone,
+                             phone: PhoneNumber,
                              skills: List[String])
 
   trait RegistrationService {

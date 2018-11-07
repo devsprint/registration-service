@@ -8,9 +8,9 @@ object registration {
 
   sealed trait Gender
 
-  final case object Male
+  final case object Male extends Gender
 
-  final case object Female
+  final case object Female extends Gender
 
   final case class City(name: String) extends AnyVal
 

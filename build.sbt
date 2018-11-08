@@ -4,6 +4,8 @@ import sbtrelease.ReleaseStateTransformations._
 name := """registration-service"""
 organization := "com.devsprint"
 
+resolvers += "IHEart Radio" at "https://dl.bintray.com/iheartradio/maven/"
+
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalaVersion := "2.12.6"
@@ -28,7 +30,7 @@ libraryDependencies ++= Seq(
   "org.flywaydb" % "flyway-core" % "4.1.2")
 
 libraryDependencies += "org.webjars" % "swagger-ui" % "2.2.8"
-libraryDependencies += "com.iheart" %% "play-swagger" %"0.7.3"
+libraryDependencies += "com.iheart" %% "play-swagger" %"0.7.4"
 
 defaultLinuxInstallLocation in Docker := "/opt/microservice"
 dockerExposedPorts in Docker := Seq(9000)

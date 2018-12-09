@@ -2,6 +2,8 @@ package domain
 
 import java.util.UUID
 
+import repositories.storage.PaginatedResult
+
 import scala.concurrent.Future
 
 object registration {
@@ -75,6 +77,14 @@ object registration {
       */
     def search(text: String): Future[List[Developer]]
 
+    /**
+      * Retrieve all developers, paginated.
+      * @param limit - how many entities to be included in a page
+      * @param offset - from where to start.
+      * @return a paginated result
+      */
+    def retrieveAll(limit: Int,
+                    offset: Long): Future[PaginatedResult[Developer]]
   }
 
 }

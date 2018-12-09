@@ -8,6 +8,10 @@ import scala.concurrent.Future
 
 object storage {
 
+  final case class PaginatedResult[T](totalCount: Long,
+                                      entities: List[T],
+                                      hasNextPage: Boolean)
+
   trait StorageRepository {
 
     /**
@@ -39,6 +43,14 @@ object storage {
       * @return success or an error
       */
     def delete(developerId: UUID): Future[Int]
+
+    /**
+      * Retrieve a paginated result of developers.
+      * @param limit - how many entities to be returned in a single request.
+      * @param offset - from where to start
+      * @return a paginated result.
+      */
+    def findAll(limit: Int, offset: Long): Future[PaginatedResult[Developer]]
   }
 
   trait SearchRepository {

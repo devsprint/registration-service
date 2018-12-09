@@ -2,6 +2,7 @@ package json
 
 import domain.registration._
 import play.api.libs.json._
+import repositories.storage.PaginatedResult
 
 object support {
 
@@ -28,5 +29,7 @@ object support {
   }
 
   implicit val developerFormat = Json.format[Developer]
+
+  implicit val pageResultFormat = Json.format[PaginatedResult[Developer]]
 
 }

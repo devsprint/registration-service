@@ -4,7 +4,7 @@ import java.util.UUID
 import com.typesafe.config.Config
 import domain.registration.Developer
 import javax.inject.{Inject, Singleton}
-import repositories.PostgresSQLRepository
+import repositories.{PostgresSQLRepository, storage}
 import domain.validation._
 
 import scala.concurrent.Future
@@ -78,4 +78,16 @@ class RegistrationService @Inject()(config: Config)
     */
   override def search(text: String): Future[List[Developer]] =
     Future.successful(List.empty)
+
+  /**
+    * Retrieve all developers, paginated.
+    *
+    * @param limit  - how many entities to be included in a page
+    * @param offset - from where to start.
+    * @return a paginated result
+    */
+  override def retrieveAll(
+      limit: Int,
+      offset: Long): Future[storage.PaginatedResult[Developer]] =
+    storageRepository.findAll(limit, offset)
 }

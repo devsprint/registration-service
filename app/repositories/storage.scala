@@ -2,7 +2,7 @@ package repositories
 
 import java.util.UUID
 
-import domain.registration.Developer
+import domain.registration.{Address, Developer, PhoneNumber}
 
 import scala.concurrent.Future
 
@@ -51,6 +51,17 @@ object storage {
       * @return a paginated result.
       */
     def findAll(limit: Int, offset: Long): Future[PaginatedResult[Developer]]
+
+    /**
+      * Update address or phone for a developer
+      * @param id - unique id
+      * @param address - optional new address
+      * @param phone - optional new phone
+      * @return - number of updates executed.
+      */
+    def patch(id: UUID,
+              address: Option[Address],
+              phone: Option[PhoneNumber]): Future[Int]
   }
 
   trait SearchRepository {

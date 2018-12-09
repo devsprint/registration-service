@@ -24,3 +24,7 @@ Tag 0.0.6
 ## 5 - Rest API layer 
 
 Tag 0.0.7
+
+### 6 - Extended implementation - added simple pagination
+
+Tag 0.0.8

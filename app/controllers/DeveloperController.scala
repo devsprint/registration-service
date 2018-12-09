@@ -87,4 +87,22 @@ class DeveloperController @Inject()(cc: ControllerComponents,
     )
   }
 
+  def developers(limit: Option[Int], offset: Option[Long]) = Action.async {
+    implicit request =>
+      val pageSize = limit.getOrElse(10)
+      val startingAt = offset.getOrElse(0L)
+      registrationService
+        .retrieveAll(pageSize, startingAt)
+        .map { page =>
+          Ok(Json.toJson(page))
+        }
+        .recover {
+          case err: Exception =>
+            logger.error("Failed to retrieve paginated list of developers.",
+                         err)
+            NotFound(Json.toJson("Failed to retrieve developers collection."))
+        }
+
+  }
+
 }

@@ -7,18 +7,25 @@ import com.dimafeng.testcontainers.{ForAllTestContainer, PostgreSQLContainer}
 import domain.registration._
 import migration.DbSetup
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{FlatSpec, Matchers}
+import org.scalatest.time.{Millis, Seconds, Span}
+import org.scalatest.{BeforeAndAfter, FlatSpec, Matchers}
 import org.slf4j.LoggerFactory
 
+import scala.collection.immutable
 import scala.util.Success
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class PostgresSqlRepositoryTest
     extends FlatSpec
     with Matchers
     with ForAllTestContainer
     with DbSetup
-    with ScalaFutures {
+    with ScalaFutures
+    with BeforeAndAfter {
+
+  implicit val defaultPatience =
+    PatienceConfig(timeout = Span(2, Seconds), interval = Span(5, Millis))
 
   private val logger = LoggerFactory.getLogger(getClass)
 
@@ -54,6 +61,14 @@ class PostgresSqlRepositoryTest
       case scala.util.Failure(exception) =>
         logger.error("Failed to execute migration.", exception)
     }
+  }
+
+  after {
+    val repository = PostgresSQLRepository(container.jdbcUrl,
+                                           container.username,
+                                           container.password)
+    repository.removeAll
+    ()
   }
 
   override lazy val username: String = container.username
@@ -100,6 +115,29 @@ class PostgresSqlRepositoryTest
     whenReady(resultF.failed) { e =>
       e shouldBe a[Exception]
     }
+  }
+
+  "Storage" should "retrieve all developers in pages" in {
+    val repository = PostgresSQLRepository(container.jdbcUrl,
+                                           container.username,
+                                           container.password)
+
+    val resultF: immutable.Seq[Future[UUID]] =
+      (1 to 100).map(_ => repository.create(probe))
+    val inserts = Future.sequence(resultF)
+    val result = for {
+      _ <- inserts
+      first <- repository.findAll(10, 0)
+    } yield first
+
+    whenReady(result) { page =>
+      page.totalCount shouldBe 100
+      page.hasNextPage shouldBe true
+      page.entities.size shouldBe 10
+      page.entities.head.birthYear shouldBe probe.birthYear
+
+    }
+
   }
 
 }

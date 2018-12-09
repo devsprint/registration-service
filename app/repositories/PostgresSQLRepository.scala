@@ -3,7 +3,7 @@ package repositories
 import java.util.UUID
 
 import domain.registration._
-import repositories.storage.StorageRepository
+import repositories.storage.{PaginatedResult, StorageRepository}
 import slick.jdbc.{JdbcBackend, JdbcProfile, PostgresProfile}
 import slick.jdbc.JdbcBackend._
 
@@ -82,6 +82,19 @@ class PostgresSQLRepository(jdbcUrl: String, username: String, password: String)
     */
   override def delete(developerId: UUID): Future[Int] = remove(developerId)
 
+  /**
+    * Retrieve a paginated result of developers.
+    *
+    * @param limit  - how many entities to be returned in a single request.
+    * @param offset - from where to start
+    * @return a paginated result.
+    */
+  override def findAll(
+      limit: Int,
+      offset: Long): Future[storage.PaginatedResult[Developer]] =
+    find(limit, offset)
+
+  def removeAll: Future[Int] = cleanup
 }
 
 trait Schema {
@@ -238,6 +251,27 @@ trait Queries extends Schema {
       _ <- insertQuery
     } yield ()).transactionally
     db.run(transaction).map(_ => developer.id)
+  }
+
+  protected def find(limit: Int,
+                     offset: Long): Future[PaginatedResult[Developer]] =
+    db.run {
+      val page = developers.drop(offset).take(limit)
+      val total = developers.length
+      for {
+        p <- page.result
+        t <- total.result
+      } yield
+        PaginatedResult(
+          totalCount = t,
+          entities = p.toList,
+          hasNextPage = t - (offset + limit) > 0
+        )
+
+    }
+
+  protected def cleanup: Future[Int] = {
+    db.run(developers.delete)
   }
 
 }

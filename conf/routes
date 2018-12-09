@@ -29,6 +29,20 @@ POST   /developers                 controllers.DeveloperController.addDeveloper
 ###
 # tags:
 #    - Developers
+# summary: Register a new developer.
+# description: Register a new developer in the system.
+# responses:
+#    201:
+#      description: Developer registred with success.
+#    400:
+#      description: Failed to register the developer.
+#
+###
+GET   /developers                 controllers.DeveloperController.developers(limit: Option[Int], offset: Option[Long])
+
+###
+# tags:
+#    - Developers
 # summary: Retrieve an existing developer.
 # description: Retrieve developer details.
 # parameters:

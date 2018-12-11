@@ -32,4 +32,6 @@ object support {
 
   implicit val pageResultFormat = Json.format[PaginatedResult[Developer]]
 
+  implicit val updateDeveloperFormat = Json.format[UpdateDeveloper]
+
 }

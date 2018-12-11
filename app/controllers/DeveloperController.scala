@@ -2,7 +2,7 @@ package controllers
 
 import java.util.UUID
 
-import domain.registration.Developer
+import domain.registration.{Developer, UpdateDeveloper}
 import javax.inject.{Inject, Singleton}
 import org.slf4j.LoggerFactory
 import play.api.libs.json.{JsResult, Json}
@@ -103,6 +103,37 @@ class DeveloperController @Inject()(cc: ControllerComponents,
             NotFound(Json.toJson("Failed to retrieve developers collection."))
         }
 
+  }
+
+  def patchDeveloper(id: String) = Action.async(parse.json) {
+    implicit request =>
+      val payload: JsResult[UpdateDeveloper] =
+        request.body.validate[UpdateDeveloper]
+      val developerId = Try { UUID.fromString(id) }.toEither
+
+      payload
+        .fold(
+          errors => respondWithErrorMessage(errors),
+          developer =>
+            if (developerId.isRight) {
+              registrationService
+                .patch(developerId.toOption.get,
+                       developer.phone,
+                       developer.address)
+                .map { id =>
+                  Ok(Json.toJson(id))
+                }
+            } else {
+              logger.error("Failed to extract developer Id..")
+              Future.successful(
+                NotFound(Json.toJson("Failed to find developer.")))
+          }
+        )
+        .recover {
+          case err: Exception =>
+            logger.error("Failed to update developer.", err)
+            BadRequest(Json.toJson("Failed to update developer."))
+        }
   }
 
 }

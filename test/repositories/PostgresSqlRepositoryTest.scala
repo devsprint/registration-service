@@ -140,4 +140,23 @@ class PostgresSqlRepositoryTest
 
   }
 
+  "Storage" should "patch an existing user" in {
+    val repository = PostgresSQLRepository(container.jdbcUrl,
+                                           container.username,
+                                           container.password)
+
+    val newPhoneNumber = PhoneNumber("0040745035490")
+
+    val result = for {
+      id <- repository.create(probe)
+      _ <- repository.patch(id, None, Some(newPhoneNumber))
+      newValue <- repository.read(id)
+    } yield newValue
+
+    whenReady(result) { patched =>
+      patched.phone.number shouldBe newPhoneNumber.number
+    }
+
+  }
+
 }

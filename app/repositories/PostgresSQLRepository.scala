@@ -3,6 +3,7 @@ package repositories
 import java.util.UUID
 
 import domain.registration._
+import repositories.PatchSupport.Update
 import repositories.storage.{PaginatedResult, StorageRepository}
 import slick.jdbc.{JdbcBackend, JdbcProfile, PostgresProfile}
 import slick.jdbc.JdbcBackend._
@@ -95,6 +96,19 @@ class PostgresSQLRepository(jdbcUrl: String, username: String, password: String)
     find(limit, offset)
 
   def removeAll: Future[Int] = cleanup
+
+  /**
+    * Update address or phone for a developer
+    *
+    * @param id      - unique id
+    * @param address - optional new address
+    * @param phone   - optional new phone
+    * @return - number of updates executed.
+    */
+  override def patch(id: UUID,
+                     address: Option[Address],
+                     phone: Option[PhoneNumber]): Future[Int] =
+    updateDb(id, address, phone)
 }
 
 trait Schema {
@@ -272,6 +286,29 @@ trait Queries extends Schema {
 
   protected def cleanup: Future[Int] = {
     db.run(developers.delete)
+  }
+
+  protected def updateDb(id: UUID,
+                         address: Option[Address],
+                         phone: Option[PhoneNumber]): Future[Int] = {
+
+    import repositories.SlickExtensions._
+
+    val updates = List(
+      phone.map(value => Update((_: Developers).phone_number, value))
+    ).flatten ++ address.toList.flatMap { value =>
+      List(
+        Update((_: Developers).address_country, value.country),
+        Update((_: Developers).address_zip_code, value.zipCode),
+        Update((_: Developers).address_city, value.city),
+        Update((_: Developers).address_other, value.other),
+        Update((_: Developers).address_street_number, value.number),
+        Update((_: Developers).address_street, value.streetName)
+      )
+    }
+
+    val stmt = developers.filter(_.id === id).applyUpdates(updates)
+    db.run(stmt)
   }
 
 }

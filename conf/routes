@@ -78,6 +78,27 @@ GET    /developers/:developerId    controllers.DeveloperController.retrieveDevel
 ###
 PUT    /developers                 controllers.DeveloperController.updateDeveloper
 
+###
+# tags:
+#    - Developers
+# summary: Patch an existing developer.
+# description: Patch developer details.
+# parameters:
+#    - name: developerId
+#      in: query
+#      description: The developer unique id.
+#      required: true
+#      type: string
+# responses:
+#    200:
+#      description: Developer patched.
+#    404:
+#      description: Developer has not be foud.
+#
+###
+PATCH    /developers/:developerId    controllers.DeveloperController.patchDeveloper(developerId)
+
+
 
 ###
 # tags:

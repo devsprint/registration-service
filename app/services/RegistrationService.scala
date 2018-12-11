@@ -2,7 +2,8 @@ package services
 import java.util.UUID
 
 import com.typesafe.config.Config
-import domain.registration.Developer
+import domain.registration
+import domain.registration.{Address, Developer, PhoneNumber}
 import javax.inject.{Inject, Singleton}
 import repositories.{PostgresSQLRepository, storage}
 import domain.validation._
@@ -90,4 +91,16 @@ class RegistrationService @Inject()(config: Config)
       limit: Int,
       offset: Long): Future[storage.PaginatedResult[Developer]] =
     storageRepository.findAll(limit, offset)
+
+  /**
+    * Patch an exiting developer record.
+    *
+    * @param developerId - developer Id.
+    * @param phoneNumber - optional new phone number
+    * @param address     - optional new address
+    */
+  override def patch(developerId: UUID,
+                     phoneNumber: Option[PhoneNumber],
+                     address: Option[Address]): Future[Int] =
+    storageRepository.patch(developerId, address, phoneNumber)
 }

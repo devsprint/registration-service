@@ -28,3 +28,7 @@ Tag 0.0.7
 ### 6 - Extended implementation - added simple pagination
 
 Tag 0.0.8
+
+### 7 - Added patch support
+
+Tag 0.0.9

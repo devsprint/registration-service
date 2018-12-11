@@ -4,7 +4,7 @@ import slick.dbio.{Effect, NoStream}
 import slick.lifted.{FlatShapeLevel, Query, Shape}
 import slick.sql.FixedSqlAction
 
-import slick.jdbc.MySQLProfile.api._
+import slick.jdbc.PostgresProfile.api._
 import scala.language.higherKinds
 
 object PatchSupport {

@@ -37,6 +37,10 @@ object registration {
                              address: Address,
                              phone: PhoneNumber,
                              skills: List[String])
+  final case class UpdateDeveloper(
+      address: Option[Address],
+      phone: Option[PhoneNumber]
+  )
 
   trait RegistrationService {
 
@@ -85,6 +89,16 @@ object registration {
       */
     def retrieveAll(limit: Int,
                     offset: Long): Future[PaginatedResult[Developer]]
+
+    /**
+      * Patch an exiting developer record.
+      * @param developerId - developer Id.
+      * @param phoneNumber - optional new phone number
+      * @param address - optional new address
+      */
+    def patch(developerId: UUID,
+              phoneNumber: Option[PhoneNumber],
+              address: Option[Address]): Future[Int]
   }
 
 }

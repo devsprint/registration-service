@@ -4,7 +4,7 @@ import repositories.PatchSupport.Update
 import slick.dbio.{DBIOAction, Effect, NoStream}
 import slick.lifted.Query
 import slick.sql.FixedSqlAction
-import slick.jdbc.MySQLProfile.api._
+import slick.jdbc.PostgresProfile.api._
 
 import scala.concurrent.ExecutionContext
 

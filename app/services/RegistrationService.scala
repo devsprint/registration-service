@@ -2,7 +2,6 @@ package services
 import java.util.UUID
 
 import com.typesafe.config.Config
-import domain.registration
 import domain.registration.{Address, Developer, PhoneNumber}
 import javax.inject.{Inject, Singleton}
 import repositories.{PostgresSQLRepository, storage}
